@@ -1,0 +1,30 @@
+trigger:
+- main
+
+pool:
+  name: bluelabelhost
+
+steps:
+
+- checkout: self
+
+- script: |
+    echo "Build Started"
+    hostname
+    pwd
+    ls -l projectOne
+  displayName: "Verify Files"
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/projectOne'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: "Copy to Artifact Staging"
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'website'
+    publishLocation: 'Container'
+  displayName: "Publish Artifact"
